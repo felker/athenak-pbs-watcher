@@ -30,11 +30,11 @@ fi
 MY_PARENT=`ps -o ppid -p $$ | tail -1 | xargs`
 
 # Set the default start delay and monitor frequency (both in minutes)
-if [[ -z ${AMRWIND_LOGMON_START_DELAY+x} ]]; then
-  AMRWIND_LOGMON_START_DELAY=5
+if [[ -z ${ATHENAK_LOGMON_START_DELAY+x} ]]; then
+  ATHENAK_LOGMON_START_DELAY=5
 fi
-if [[ -z ${AMRWIND_LOGMON_MONFREQ+x} ]]; then
-  AMRWIND_LOGMON_MONFREQ=5
+if [[ -z ${ATHENAK_LOGMON_MONFREQ+x} ]]; then
+  ATHENAK_LOGMON_MONFREQ=5
 fi
 
 # Enable gstack if available
@@ -50,7 +50,7 @@ elif command -v gstack &> /dev/null; then
 fi
 
 # Initial wait
-sleep $(($AMRWIND_LOGMON_START_DELAY * 60))
+sleep $(($ATHENAK_LOGMON_START_DELAY * 60))
 
 # Check if LOGF is now available
 LOGF=$log_file
@@ -67,13 +67,13 @@ NLINES_OLD=`wc -l $LOGF | awk '{print $1}'`
 while (( `ps -p $MY_PARENT | wc -l` == 2 )); do
 
   KILL_NOW=0
-  sleep $(($AMRWIND_LOGMON_MONFREQ * 60))
+  sleep $(($ATHENAK_LOGMON_MONFREQ * 60))
 
   NLINES_NEW=`wc -l $LOGF | awk '{print $1}'`
 
   # Check if no update to log since last check
   if (( $NLINES_NEW == $NLINES_OLD )) && (( `ps -p $MY_PARENT | wc -l` == 2 )); then
-    echo "[LOG MONITOR, $(date_)] ERROR: Log file $LOGF has not been updated in the last $AMRWIND_LOGMON_MONFREQ minutes!" | tee -a $LOGF
+    echo "[LOG MONITOR, $(date_)] ERROR: Log file $LOGF has not been updated in the last $ATHENAK_LOGMON_MONFREQ minutes!" | tee -a $LOGF
     KILL_NOW=1
 
     if  (( $ENABLE_GSTACK == 0 )); then
@@ -97,10 +97,10 @@ while (( `ps -p $MY_PARENT | wc -l` == 2 )); do
 
   if (( $KILL_NOW == 1 )); then
 
-    echo "[LOG MONITOR, $(date_)] Issuing a kill of AMRWIND processes across all nodes!" | tee -a $LOGF
+    echo "[LOG MONITOR, $(date_)] Issuing a kill of AthenaK processes across all nodes!" | tee -a $LOGF
 
     # Kill
-    clush -f 1024 -S -t 30 -u 60 --hostfile $HOSTFILE "ps -ef | grep -e 'amr_wind' | awk '{print \$2}' | xargs kill -9"
+    clush -f 1024 -S -t 30 -u 60 --hostfile $HOSTFILE "ps -ef | grep -e 'athenak' | awk '{print \$2}' | xargs kill -9"
 
     sleep 5
     kill $MPIEXEC_PROC

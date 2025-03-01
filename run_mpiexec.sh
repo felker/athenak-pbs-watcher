@@ -29,7 +29,7 @@ echo "PPN: " $PPN
 echo "INP: " $INP
 
 echo ${PWD}
-echo "mpiexec --np $NUM_NODES --ppn $PPN gpu_tile_compact.sh ./amr_wind $INP"
+echo "mpiexec --np $NUM_NODES --ppn $PPN gpu_tile_compact.sh ./athenak $INP"
 
 cd build
 echo ${PWD}
@@ -49,7 +49,7 @@ export NUM_NODES
 export HOSTFILE
 # Launch log monitor
 export GSTACK_WRAPPER_LOC="/soft/tools/gstack-gdb-oneapi/bin/gstack-gdb-oneapi-cpu.sh"
-../amrwind_log_monitor.sh &
+../athenak_log_monitor.sh &
 LOGMON_PID=$!
 
 
